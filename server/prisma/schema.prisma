@@ -1,0 +1,104 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  firstName String
+  lastName  String
+  apartment String
+  role      String   @default("RESIDENT")
+  status    String   @default("PENDING")
+  refreshToken String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  vehicles            Vehicle[]
+  raffleRegistrations  RaffleRegistration[]
+  parkingAssignments   ParkingAssignment[]
+}
+
+model Vehicle {
+  id           String   @id @default(uuid())
+  licensePlate String   @unique
+  type         String
+  make         String
+  model        String
+  color        String
+  userId       String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user                User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  raffleRegistrations RaffleRegistration[]
+  parkingAssignments  ParkingAssignment[]
+  cameraDetections    CameraDetection[]
+}
+
+model ParkingSpotConfig {
+  id            String   @id @default(uuid())
+  vehicleType   String
+  totalSpots    Int
+  effectiveFrom DateTime @default(now())
+  createdAt     DateTime @default(now())
+}
+
+model RaffleCycle {
+  id         String    @id @default(uuid())
+  name       String
+  startDate  DateTime
+  endDate    DateTime
+  status     String    @default("PENDING")
+  executedAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  registrations      RaffleRegistration[]
+  parkingAssignments ParkingAssignment[]
+}
+
+model RaffleRegistration {
+  id            String   @id @default(uuid())
+  userId        String
+  vehicleId     String
+  raffleCycleId String
+  createdAt     DateTime @default(now())
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vehicle     Vehicle     @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  raffleCycle RaffleCycle  @relation(fields: [raffleCycleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, vehicleId, raffleCycleId])
+}
+
+model ParkingAssignment {
+  id            String   @id @default(uuid())
+  userId        String
+  vehicleId     String
+  raffleCycleId String
+  spotNumber    Int
+  vehicleType   String
+  tier          Int
+  createdAt     DateTime @default(now())
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vehicle     Vehicle     @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  raffleCycle RaffleCycle  @relation(fields: [raffleCycleId], references: [id], onDelete: Cascade)
+}
+
+model CameraDetection {
+  id           String   @id @default(uuid())
+  licensePlate String
+  vehicleId    String?
+  detectedAt   DateTime @default(now())
+  status       String   @default("DETECTED")
+
+  vehicle Vehicle? @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+}

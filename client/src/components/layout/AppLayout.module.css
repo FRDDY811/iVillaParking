@@ -1,0 +1,36 @@
+.layout {
+  min-height: 100vh;
+}
+
+.logo {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: bold;
+}
+
+.header {
+  padding: 0 24px;
+  background: #1f1f1f;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.userDropdown {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.content {
+  margin: 24px;
+  padding: 24px;
+  background: #1f1f1f;
+  border-radius: 8px;
+  min-height: 280px;
+}

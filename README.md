@@ -26,7 +26,6 @@ npm install
 cp .env.example .env           # root .env (used by client)
 cp .env server/.env            # server .env (used by Prisma and Express)
 npm run db:migrate
-npm run db:migrate
 npm run db:seed                # creates admin + default parking config
 ```
 

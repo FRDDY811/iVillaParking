@@ -23,7 +23,9 @@ A parking management system for a residential community. The main challenge was 
 
 ```bash
 npm install
-cp .env.example .env
+cp .env.example .env           # root .env (used by client)
+cp .env server/.env            # server .env (used by Prisma and Express)
+npm run db:migrate
 npm run db:migrate
 npm run db:seed                # creates admin + default parking config
 ```
